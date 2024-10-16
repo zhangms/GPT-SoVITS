@@ -29,7 +29,7 @@ try:
 except:...
 
 
-infer_ttswebui = os.environ.get("infer_ttswebui", 9872)
+infer_ttswebui = os.environ.get("infer_ttswebui", 7080)
 infer_ttswebui = int(infer_ttswebui)
 is_share = os.environ.get("is_share", "False")
 is_share = eval(is_share)
