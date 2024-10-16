@@ -1,4 +1,4 @@
-import sys,os
+import sys, os
 
 import torch
 
@@ -7,8 +7,8 @@ sovits_path = ""
 gpt_path = ""
 is_half_str = os.environ.get("is_half", "True")
 is_half = True if is_half_str.lower() == 'true' else False
-is_share_str = os.environ.get("is_share","False")
-is_share= True if is_share_str.lower() == 'true' else False
+is_share_str = os.environ.get("is_share", "False")
+is_share = True if is_share_str.lower() == 'true' else False
 
 cnhubert_path = "GPT_SoVITS/pretrained_models/chinese-hubert-base"
 bert_path = "GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large"
@@ -22,7 +22,7 @@ if torch.cuda.is_available():
 else:
     infer_device = "cpu"
 
-webui_port_main = 9874
+webui_port_main = 7080
 webui_port_uvr5 = 9873
 webui_port_infer_tts = 9872
 webui_port_subfix = 9871
@@ -39,9 +39,10 @@ if infer_device == "cuda":
             or "1070" in gpu_name
             or "1080" in gpu_name
     ):
-        is_half=False
+        is_half = False
 
-if(infer_device=="cpu"):is_half=False
+if (infer_device == "cpu"): is_half = False
+
 
 class Config:
     def __init__(self):
