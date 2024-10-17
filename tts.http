@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://8.215.71.251:7080/tts?text=hello world&speaker_id=Binary&trace_id=111
+GET http://8.215.71.251:7080/tts_stream?text=Sure, I'm down for some quality talk time. What's on your mind?&speaker_id=Binary&trace_id=111
 Accept: application/json
 
 ###
