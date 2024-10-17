@@ -9,12 +9,23 @@ print("__file__", __file__)
 print("root_path", root_path)
 
 config = TTS_Config("GPT_SoVITS/mycfg/tts_infer_binary.yaml")
-pipline = TTS(config)
+tts_pipeline = TTS(config)
 
 
 def tts_fn(text, speaker):
-    print("INFERENCE_UI:", text, speaker)
-    return "Success", None
+    req = {
+        "text": text,
+        "text_lang": "en",
+        "text_split_method": "cut5",
+        "media_type": "wav",
+        "batch_size": 1,
+    }
+
+    tts_generator = tts_pipeline.run(req)
+    sr, audio_data = next(tts_generator)
+
+    print("INFERENCE_UI:", text, speaker, sr, audio_data)
+    return "Success", (sr, audio_data)
 
 
 if __name__ == "__main__":
