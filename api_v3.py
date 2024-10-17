@@ -23,14 +23,30 @@ class TTSRequest(BaseModel):
     trace_id: str = ""
 
 
-def pack_wav(io_buffer: BytesIO, data: np.ndarray, rate: int):
+def pack_wav(data: np.ndarray, rate: int):
     io_buffer = BytesIO()
     sf.write(io_buffer, data, rate, format='wav')
     io_buffer.seek(0)
     return io_buffer
 
 
+def pack_mp3(data: np.ndarray, rate: int):
+    io_buffer = BytesIO()
+    sf.write(io_buffer, data, rate, format='mp3')
+    io_buffer.seek(0)
+    return io_buffer
+
+
 async def tts_handle(trace_id, text, speaker_id):
+    try:
+        sr, audio = tts_pipline.inference(trace_id, text, speaker_id)
+        audio_data = pack_mp3(audio, sr).getvalue()
+        return Response(audio_data, media_type=f"audio/mp3")
+    except Exception as ex:
+        return JSONResponse(status_code=500, content=f"ERROR:{ex}")
+
+
+async def tts_mp3_base64_handle(trace_id, text, speaker_id):
     try:
         sr, audio = tts_pipline.inference(trace_id, text, speaker_id)
         audio_data = pack_wav(BytesIO(), audio, sr).getvalue()
@@ -51,7 +67,7 @@ async def tts(trace_id: str, text: str, speaker_id: str):
 
 @APP.post("/audgeneratebase64")
 async def tts(request: TTSRequest):
-    return await tts_handle(request, request.text, request.speaker_id)
+    return await tts_mp3_base64_handle(request, request.text, request.speaker_id)
 
 
 if __name__ == "__main__":
