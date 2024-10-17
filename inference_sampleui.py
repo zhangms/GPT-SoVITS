@@ -9,33 +9,48 @@ root_path = os.path.split(os.path.realpath(__file__))[0]
 print("__file__", __file__)
 print("root_path", root_path)
 
-config = TTS_Config("GPT_SoVITS/mycfg/tts_infer_binary.yaml")
-tts_pipeline = TTS(config)
+speakers = [
+    "Binary",
+    "Dara",
+    "Fantasm",
+    "MaXine",
+    "Neon",
+    "Pyro",
+    "Vigor",
+    "Vio",
+    "Ziggy"
+]
+
+tts_models = {}
+
+for speaker in speakers:
+    speaker_id = speaker.lower()
+    cfg_path = f"GPT_SoVITS/mycfg/tts_infer_{speaker_id}.yaml"
+    config = TTS_Config(cfg_path)
+    tts_pipeline = TTS(config)
+    tts_models[speaker_id] = tts_pipeline
 
 
-def tts_fn(text, speaker):
+def tts_fn(text, char):
     req = {
         "text": text,
         "text_lang": "en",
         "text_split_method": "cut5",
         "media_type": "wav",
         "batch_size": 1,
-        "ref_audio_path": "/workspace/res/gptsovits-930/Binary/Binary.wav",
+        "ref_audio_path": f"/workspace/res/gptsovits-930/Binary/{char}.wav",
     }
 
     start = time.time()
-    tts_generator = tts_pipeline.run(req)
+    tts_generator = tts_models[char.lower()].run(req)
     sr, audio_data = next(tts_generator)
     end = time.time()
 
-    print("INFERENCE_UI:", text, speaker, sr, end - start)
+    print("INFERENCE_UI:", text, char, sr, end - start)
     return "Success", (sr, audio_data)
 
 
 if __name__ == "__main__":
-    # print("speakers:", predictor.get_speakers())
-    # speakers = list(predictor.get_speakers().keys())
-    speakers = ["Jack", "Rose"]
     app = gr.Blocks()
     with app:
         with gr.Tab("Text-to-Speech"):
