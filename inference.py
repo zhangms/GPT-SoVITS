@@ -25,7 +25,7 @@ class Inference(object):
             cfg_path = f"GPT_SoVITS/mycfg/tts_infer_{speaker.lower()}.yaml"
             config = TTS_Config(cfg_path)
             tts_pipeline = TTS(config)
-            tts_pipeline.set_ref_audio(f"/workspace/res/gptsovits-930/{speaker}/{speaker}.wav")
+            tts_pipeline.set_ref_audio(f"GPT_SoVITS/gptsovits-930/{speaker}/{speaker}.wav")
             self.tts_models[speaker.lower()] = tts_pipeline
             self.inference("hello world", speaker)
 
