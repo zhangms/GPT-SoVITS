@@ -24,6 +24,7 @@ class Inference(object):
 
         self.tts_models = {}
         self.load_tts_model()
+        self.warmup()
 
     def load_tts_model(self):
         for speaker in self.speakers:
@@ -34,7 +35,10 @@ class Inference(object):
             tts_pipeline = TTS(config)
             tts_pipeline.set_ref_audio(ref_audio)
             self.tts_models[speaker.lower()] = tts_pipeline
-            self.inference("hello world", speaker)
+
+    def warmup(self):
+        for speaker in self.speakers:
+            self.inference("warmup", speaker)
 
     def get_speakers(self):
         return self.speakers
@@ -44,7 +48,6 @@ class Inference(object):
             "text": text,
             "text_lang": "en",
             "text_split_method": "cut5",
-            "ref_audio_path": "",
         }
 
         start = time.time()
