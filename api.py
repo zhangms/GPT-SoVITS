@@ -901,6 +901,11 @@ async def control(command: str = None):
     return handle_control(command)
 
 
+@app.get("/check-health")
+async def check_health(command: str = None):
+    return "OK"
+
+
 @app.post("/change_refer")
 async def change_refer(request: Request):
     json_post_raw = await request.json()
