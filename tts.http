@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "trace_id": "111",
-  "text": "hello world",
+  "text": "Sure, I'm down for some quality talk time. What's on your mind?",
   "speaker_id": "Binary"
 }
 
