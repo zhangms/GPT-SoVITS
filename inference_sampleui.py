@@ -8,7 +8,7 @@ root_path = os.path.split(os.path.realpath(__file__))[0]
 print("__file__", __file__)
 print("root_path", root_path)
 
-config = TTS_Config("GPT_SoVITS/configs/tts_infer_binary.yaml")
+config = TTS_Config("GPT_SoVITS/mycfg/tts_infer_binary.yaml")
 pipline = TTS(config)
 
 
