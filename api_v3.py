@@ -1,6 +1,8 @@
 import base64
+import datetime
 import os
 import signal
+import time
 import traceback
 from io import BytesIO
 
@@ -62,9 +64,16 @@ async def tts_base64_handle(trace_id, text, speaker_id):
 async def tts_stream_handle(trace_id, text, speaker_id):
     try:
         tts_gen = tts_pipline.generator(text, speaker_id)
+        print(f"{datetime.datetime.now()}|TTS_STREAM_GENERATOR|{trace_id}|{speaker_id}|{text}")
 
         def streaming_generator(tts_generator):
+            start = time.time()
+            index = 0
             for sr, chunk in tts_generator:
+                end = time.time()
+                rt = end - start
+                start = end
+                print(f"{datetime.datetime.now()}|TTS_STREAM_GENERATOR|{trace_id}|{speaker_id}|index:{index}|rt:{rt}")
                 yield pack_mp3(chunk, sr).getvalue()
 
         return StreamingResponse(streaming_generator(tts_gen), media_type=f"audio/mp3")
