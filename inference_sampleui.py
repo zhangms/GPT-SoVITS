@@ -13,7 +13,7 @@ tts_pipline = Inference()
 
 def tts_fn(text, speaker):
     try:
-        sr, audio = tts_pipline.inference(text, speaker)
+        sr, audio = tts_pipline.inference("", text, speaker)
         return "Success", (sr, audio)
     except Exception as e:
         return f"Error: {e}", None
