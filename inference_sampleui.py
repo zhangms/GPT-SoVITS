@@ -50,4 +50,4 @@ if __name__ == "__main__":
                     btn.click(tts_fn,
                               inputs=[textbox, char_dropdown],
                               outputs=[text_output, audio_output])
-    app.launch(share=False, server_port=7080, server_name="0.0.0.0")
+    app.launch(share=False, server_port=9880, server_name="0.0.0.0")
