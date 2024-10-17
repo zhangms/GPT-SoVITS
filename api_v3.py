@@ -7,6 +7,7 @@ import numpy as np
 import soundfile as sf
 import uvicorn
 from fastapi import FastAPI, Response
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from inference import Inference
@@ -35,7 +36,7 @@ async def tts_handle(trace_id, text, speaker_id):
         audio_data = pack_wav(BytesIO(), audio, sr).getvalue()
         return Response(audio_data, media_type=f"audio/wav")
     except Exception as ex:
-        return str(ex)
+        return JSONResponse(status_code=500, content=f"ERROR:{ex}")
 
 
 @APP.get("/api/check-health")
