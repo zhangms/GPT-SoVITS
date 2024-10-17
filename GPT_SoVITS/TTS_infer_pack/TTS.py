@@ -59,6 +59,8 @@ default_v2:
   version: v2
 """
 
+weightCache = {}
+
 
 def set_seed(seed: int):
     seed = int(seed)
@@ -280,21 +282,34 @@ class TTS:
         # self.enable_half_precision(self.configs.is_half)
 
     def init_cnhuhbert_weights(self, base_path: str):
-        print(f"Loading CNHuBERT weights from {base_path}")
-        self.cnhuhbert_model = CNHubert(base_path)
-        self.cnhuhbert_model = self.cnhuhbert_model.eval()
-        self.cnhuhbert_model = self.cnhuhbert_model.to(self.configs.device)
-        if self.configs.is_half and str(self.configs.device) != "cpu":
-            self.cnhuhbert_model = self.cnhuhbert_model.half()
+        key = f"CNHuBERT:{base_path}"
+        if key not in weightCache:
+            print(f"Loading CNHuBERT weights from {base_path}")
+            self.cnhuhbert_model = CNHubert(base_path)
+            self.cnhuhbert_model = self.cnhuhbert_model.eval()
+            self.cnhuhbert_model = self.cnhuhbert_model.to(self.configs.device)
+            if self.configs.is_half and str(self.configs.device) != "cpu":
+                self.cnhuhbert_model = self.cnhuhbert_model.half()
+            weightCache[key] = self.cnhuhbert_model
+        else:
+            self.cnhuhbert_model = weightCache[key]
 
     def init_bert_weights(self, base_path: str):
-        print(f"Loading BERT weights from {base_path}")
-        self.bert_tokenizer = AutoTokenizer.from_pretrained(base_path)
-        self.bert_model = AutoModelForMaskedLM.from_pretrained(base_path)
-        self.bert_model = self.bert_model.eval()
-        self.bert_model = self.bert_model.to(self.configs.device)
-        if self.configs.is_half and str(self.configs.device) != "cpu":
-            self.bert_model = self.bert_model.half()
+        key_bert_model = f"BERT:{base_path}"
+        key_bert_tokenizer = f"BERT_TOKENIZER:{base_path}"
+        if key_bert_model not in weightCache:
+            print(f"Loading BERT weights from {base_path}")
+            self.bert_tokenizer = AutoTokenizer.from_pretrained(base_path)
+            self.bert_model = AutoModelForMaskedLM.from_pretrained(base_path)
+            self.bert_model = self.bert_model.eval()
+            self.bert_model = self.bert_model.to(self.configs.device)
+            if self.configs.is_half and str(self.configs.device) != "cpu":
+                self.bert_model = self.bert_model.half()
+            weightCache[key_bert_model] = self.bert_model
+            weightCache[key_bert_tokenizer] = self.bert_tokenizer
+        else:
+            self.bert_tokenizer = weightCache[key_bert_tokenizer]
+            self.bert_model = weightCache[key_bert_model]
 
     def init_vits_weights(self, weights_path: str):
         print(f"Loading VITS weights from {weights_path}")
