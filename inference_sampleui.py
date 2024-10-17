@@ -2,12 +2,14 @@ import os
 
 import gradio as gr
 
+from GPT_SoVITS.TTS_infer_pack.TTS import TTS_Config, TTS
+
 root_path = os.path.split(os.path.realpath(__file__))[0]
 print("__file__", __file__)
 print("root_path", root_path)
 
-
-# predictor = Predictor(root_path + "/OUTPUT_MODEL/G_latest.pth", root_path + "/OUTPUT_MODEL/config.json")
+config = TTS_Config("GPT_SoVITS/configs/tts_infer_binary.yaml")
+pipline = TTS(config)
 
 
 def tts_fn(text, speaker):
