@@ -28,7 +28,7 @@ def tts_fn(text, speaker):
     sr, audio_data = next(tts_generator)
     end = time.time()
 
-    print("INFERENCE_UI:", text, speaker, sr, audio_data, end - start)
+    print("INFERENCE_UI:", text, speaker, sr, end - start)
     return "Success", (sr, audio_data)
 
 
