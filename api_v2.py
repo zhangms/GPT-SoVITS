@@ -404,6 +404,11 @@ async def tts_post_endpoint(request: TTS_Request):
     return await tts_handle(req)
 
 
+@APP.get("/api/check-health")
+async def check_health(refer_audio_path: str = None):
+    return "OK"
+
+
 @APP.get("/set_refer_audio")
 async def set_refer_aduio(refer_audio_path: str = None):
     try:
