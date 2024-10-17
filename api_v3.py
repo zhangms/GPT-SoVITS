@@ -74,6 +74,7 @@ async def tts_stream_handle(trace_id, text, speaker_id):
                 rt = end - start
                 start = end
                 print(f"{datetime.datetime.now()}|TTS_STREAM_GENERATOR|{trace_id}|{speaker_id}|index:{index}|rt:{rt}")
+                index += 1
                 yield pack_mp3(chunk, sr).getvalue()
 
         return StreamingResponse(streaming_generator(tts_gen), media_type=f"audio/mp3")
