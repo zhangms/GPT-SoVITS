@@ -1,4 +1,5 @@
 import os
+import time
 
 import gradio as gr
 
@@ -22,10 +23,12 @@ def tts_fn(text, speaker):
         "ref_audio_path": "/workspace/res/gptsovits-930/Binary/Binary.wav",
     }
 
+    start = time.time()
     tts_generator = tts_pipeline.run(req)
     sr, audio_data = next(tts_generator)
+    end = time.time()
 
-    print("INFERENCE_UI:", text, speaker, sr, audio_data)
+    print("INFERENCE_UI:", text, speaker, sr, audio_data, end - start)
     return "Success", (sr, audio_data)
 
 
