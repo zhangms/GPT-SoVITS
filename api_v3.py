@@ -1,3 +1,4 @@
+import base64
 import os
 import signal
 import traceback
@@ -43,7 +44,8 @@ async def tts_base64_handle(trace_id, text, speaker_id):
     try:
         sr, audio = tts_pipline.inference(trace_id, text, speaker_id)
         audio_data = pack_mp3(audio, sr).getvalue()
-        return Response(audio_data, media_type=f"audio/wav")
+        encoded_content = base64.b64encode(audio_data)
+        return JSONResponse(content=f"{'audio':'{encoded_content}'}")
     except Exception as ex:
         return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
 
@@ -67,6 +69,7 @@ if __name__ == "__main__":
     try:
         uvicorn.run(app=APP, host="0.0.0.0", port=7080, workers=1)
     except Exception as e:
+        print(e)
         traceback.print_exc()
         os.kill(os.getpid(), signal.SIGTERM)
         exit(0)
