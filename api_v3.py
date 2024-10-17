@@ -1,3 +1,4 @@
+import logging
 import os
 import signal
 import traceback
@@ -6,12 +7,28 @@ from io import BytesIO
 import numpy as np
 import soundfile as sf
 import uvicorn
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, Request
 from pydantic import BaseModel
 
 from inference import Inference
 
 APP = FastAPI()
+
+
+class FilterHealthCheckLogsMiddleware:
+    def __init__(self, app: FastAPI):
+        self.app = app
+
+    async def __call__(self, request: Request, call_next):
+        if request.url.path == "/api/check-health":
+            logging.getLogger("uvicorn.access").disabled = True
+        response = await call_next(request)
+        if request.url.path == "/api/check-health":
+            logging.getLogger("uvicorn.access").disabled = False
+        return response
+
+
+APP.middleware("http")(FilterHealthCheckLogsMiddleware(APP))
 
 tts_pipline = Inference()
 
