@@ -1,59 +1,25 @@
 import os
-import time
 
 import gradio as gr
 
-from GPT_SoVITS.TTS_infer_pack.TTS import TTS, TTS_Config
+from inference import Inference
 
 root_path = os.path.split(os.path.realpath(__file__))[0]
 print("__file__", __file__)
 print("root_path", root_path)
 
-speakers = [
-    "Binary",
-    "Dara",
-    "Fantasm",
-    "MaXine",
-    "Neon",
-    "Pyro",
-    "Vigor",
-    "Vio",
-    "Ziggy"
-]
-
-tts_models = {}
+tts_pipline = Inference()
 
 
-def init_tts_model():
-    for speaker in speakers:
-        speaker_id = speaker.lower()
-        cfg_path = f"GPT_SoVITS/mycfg/tts_infer_{speaker_id}.yaml"
-        config = TTS_Config(cfg_path)
-        tts_pipeline = TTS(config)
-        tts_pipeline.set_ref_audio(f"/workspace/res/gptsovits-930/{speaker}/{speaker}.wav")
-        tts_models[speaker_id] = tts_pipeline
-        tts_fn("hello world", speaker)
-
-
-def tts_fn(text, char):
-    req = {
-        "text": text,
-        "text_lang": "en",
-        "text_split_method": "cut5",
-        "media_type": "wav",
-    }
-
-    start = time.time()
-    tts_generator = tts_models[char.lower()].run(req)
-    sr, audio_data = next(tts_generator)
-    end = time.time()
-
-    print("INFERENCE_UI:", text, char, sr, end - start)
-    return "Success", (sr, audio_data)
+def tts_fn(text, speaker):
+    try:
+        sr, audio = tts_pipline.inference(text, speaker)
+        return "Success", (sr, audio)
+    except Exception as e:
+        return f"Error: {e}", None
 
 
 if __name__ == "__main__":
-    init_tts_model()
     app = gr.Blocks()
     with app:
         with gr.Tab("Text-to-Speech"):
