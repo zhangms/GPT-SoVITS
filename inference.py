@@ -1,3 +1,4 @@
+import datetime
 import os
 import time
 
@@ -34,12 +35,12 @@ class Inference(object):
             tts_pipeline = TTS(config)
             tts_pipeline.set_ref_audio(ref_audio)
             self.tts_models[speaker.lower()] = tts_pipeline
-            self.inference("warmup", speaker)
+            self.inference(speaker, "warmup", speaker)
 
     def get_speakers(self):
         return self.speakers
 
-    def inference(self, text, speaker):
+    def inference(self, trace_id, text, speaker):
         req = {
             "text": text,
             "text_lang": "en",
@@ -52,5 +53,5 @@ class Inference(object):
         sr, audio_data = next(tts_generator)
         end = time.time()
 
-        print(f"TTS_INFERENCE|{speaker}|{text}|rt:{end - start}")
+        print(f"{datetime.time()}|TTS_INFERENCE|{trace_id}|{speaker}|{text}|rt:{end - start}")
         return sr, audio_data
