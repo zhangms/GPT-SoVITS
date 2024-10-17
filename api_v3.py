@@ -43,8 +43,8 @@ async def check_health():
 
 
 @APP.get("/tts")
-async def tts(request: TTSRequest):
-    return await tts_handle(request, request.text, request.speaker_id)
+async def tts(trace_id: str, text: str, speaker_id: str):
+    return await tts_handle(trace_id, text, speaker_id)
 
 
 @APP.post("/audgeneratebase64")
