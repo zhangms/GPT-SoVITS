@@ -64,7 +64,6 @@ async def tts_base64_handle(trace_id, text, speaker_id):
 async def tts_stream_handle(trace_id, text, speaker_id):
     try:
         tts_gen = tts_pipline.generator(text, speaker_id)
-        print(f"{datetime.datetime.now()}|TTS_STREAM_GENERATOR|{trace_id}|{speaker_id}|{text}")
 
         def streaming_generator(tts_generator):
             start = time.time()
@@ -99,6 +98,7 @@ async def audgeneratebase64(request: TTSRequest):
 
 @APP.get("/tts_stream")
 async def tts_stream(trace_id: str, text: str, speaker_id: str):
+    print(f"{datetime.datetime.now()}|TTS_STREAM|{trace_id}|{speaker_id}|{text}")
     return await tts_stream_handle(trace_id, text, speaker_id)
 
 

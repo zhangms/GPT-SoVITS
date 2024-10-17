@@ -8,9 +8,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://8.215.71.251:7080/tts_stream?
-    text=Hey there! It's always fun to meet new people. What brings you to NovaJoy Island??&speaker_id=Binary&
-    trace_id=111
+GET http://8.215.71.251:7080/tts_stream?text=Hey there! It's always fun to meet new people. What brings you to NovaJoy Island??&speaker_id=Binary&trace_id=111
 Accept: application/json
 
 ###
