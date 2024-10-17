@@ -1,29 +1,31 @@
-
-
-
-
 import re
 from typing import Callable
 
-punctuation = set(['!', '?', '…', ',', '.', '-'," "])
+punctuation = set(['!', '?', '…', ',', '.', '-', " "])
 METHODS = dict()
 
-def get_method(name:str)->Callable:
+
+def get_method(name: str) -> Callable:
     method = METHODS.get(name, None)
     if method is None:
         raise ValueError(f"Method {name} not found")
     return method
 
-def get_method_names()->list:
+
+def get_method_names() -> list:
     return list(METHODS.keys())
+
 
 def register_method(name):
     def decorator(func):
         METHODS[name] = func
         return func
+
     return decorator
 
+
 splits = {"，", "。", "？", "！", ",", ".", "?", "!", "~", ":", "：", "—", "…", }
+
 
 def split_big_text(text, max_len=510):
     # 定义全角和半角标点符号
@@ -31,11 +33,11 @@ def split_big_text(text, max_len=510):
 
     # 切割文本
     segments = re.split('([' + punctuation + '])', text)
-    
+
     # 初始化结果列表和当前片段
     result = []
     current_segment = ''
-    
+
     for segment in segments:
         # 如果当前片段加上新的片段长度超过max_len，就将当前片段加入结果列表，并重置当前片段
         if len(current_segment + segment) > max_len:
@@ -43,13 +45,12 @@ def split_big_text(text, max_len=510):
             current_segment = segment
         else:
             current_segment += segment
-    
+
     # 将最后一个片段加入结果列表
     if current_segment:
         result.append(current_segment)
-    
-    return result
 
+    return result
 
 
 def split(todo_text):
@@ -123,6 +124,7 @@ def cut2(inp):
     opts = [item for item in opts if not set(item).issubset(punctuation)]
     return "\n".join(opts)
 
+
 # 按中文句号。切
 @register_method("cut3")
 def cut3(inp):
@@ -131,13 +133,15 @@ def cut3(inp):
     opts = [item for item in opts if not set(item).issubset(punctuation)]
     return "\n".join(opts)
 
-#按英文句号.切
+
+# 按英文句号.切
 @register_method("cut4")
 def cut4(inp):
     inp = inp.strip("\n")
     opts = ["%s" % item for item in inp.strip(".").split(".")]
     opts = [item for item in opts if not set(item).issubset(punctuation)]
     return "\n".join(opts)
+
 
 # 按标点符号切
 # contributed by https://github.com/AI-Hobbyist/GPT-SoVITS/blob/main/GPT_SoVITS/inference_webui.py
@@ -166,8 +170,6 @@ def cut5(inp):
     return "\n".join(opt)
 
 
-
 if __name__ == '__main__':
     method = get_method("cut5")
     print(method("你好，我是小明。你好，我是小红。你好，我是小刚。你好，我是小张。"))
-    

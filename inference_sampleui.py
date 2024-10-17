@@ -30,6 +30,7 @@ def init_tts_model():
         cfg_path = f"GPT_SoVITS/mycfg/tts_infer_{speaker_id}.yaml"
         config = TTS_Config(cfg_path)
         tts_pipeline = TTS(config)
+        tts_pipeline.set_ref_audio(f"/workspace/res/gptsovits-930/{speaker}/{speaker}.wav")
         tts_models[speaker_id] = tts_pipeline
         tts_fn("hello world", speaker)
 
@@ -40,8 +41,6 @@ def tts_fn(text, char):
         "text_lang": "en",
         "text_split_method": "cut5",
         "media_type": "wav",
-        "batch_size": 1,
-        "ref_audio_path": f"/workspace/res/gptsovits-930/{char}/{char}.wav",
     }
 
     start = time.time()
