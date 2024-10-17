@@ -23,12 +23,15 @@ speakers = [
 
 tts_models = {}
 
-for speaker in speakers:
-    speaker_id = speaker.lower()
-    cfg_path = f"GPT_SoVITS/mycfg/tts_infer_{speaker_id}.yaml"
-    config = TTS_Config(cfg_path)
-    tts_pipeline = TTS(config)
-    tts_models[speaker_id] = tts_pipeline
+
+def init_tts_model():
+    for speaker in speakers:
+        speaker_id = speaker.lower()
+        cfg_path = f"GPT_SoVITS/mycfg/tts_infer_{speaker_id}.yaml"
+        config = TTS_Config(cfg_path)
+        tts_pipeline = TTS(config)
+        tts_models[speaker_id] = tts_pipeline
+        tts_fn("hello world", speaker)
 
 
 def tts_fn(text, char):
@@ -51,6 +54,7 @@ def tts_fn(text, char):
 
 
 if __name__ == "__main__":
+    init_tts_model()
     app = gr.Blocks()
     with app:
         with gr.Tab("Text-to-Speech"):
