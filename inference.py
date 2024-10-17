@@ -45,7 +45,8 @@ class Inference(object):
             "text": text,
             "text_lang": "en",
             "text_split_method": "cut5",
-            "ref_audio_path": None
+            "ref_audio_path": None,
+            "parallel_infer": False,
         }
 
         start = time.time()
