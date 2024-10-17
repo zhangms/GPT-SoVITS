@@ -38,7 +38,7 @@ def tts_fn(text, char):
         "text_split_method": "cut5",
         "media_type": "wav",
         "batch_size": 1,
-        "ref_audio_path": f"/workspace/res/gptsovits-930/Binary/{char}.wav",
+        "ref_audio_path": f"/workspace/res/gptsovits-930/{char}/{char}.wav",
     }
 
     start = time.time()
