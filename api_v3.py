@@ -20,11 +20,17 @@ class TTSRequest(BaseModel):
 
 
 async def tts_handle(trace_id, text, speaker_id):
+    return tts_pipline.inference(trace_id, text, speaker_id)
 
 
 @APP.get("/api/check-health")
 async def check_health():
     return "OK"
+
+
+@APP.get("/tts")
+async def tts(request: TTSRequest):
+    return await tts_handle(request, request.text, request.speaker_id)
 
 
 @APP.post("/audgeneratebase64")
