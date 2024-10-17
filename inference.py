@@ -1,6 +1,11 @@
+import os
 import time
 
 from GPT_SoVITS.TTS_infer_pack.TTS import TTS_Config, TTS
+
+root_path = os.path.split(os.path.realpath(__file__))[0]
+print("__file__", __file__)
+print("root_path", root_path)
 
 
 class Inference(object):
@@ -22,10 +27,11 @@ class Inference(object):
 
     def load_tts_model(self):
         for speaker in self.speakers:
-            cfg_path = f"GPT_SoVITS/mycfg/tts_infer_{speaker.lower()}.yaml"
+            cfg_path = f"{root_path}/GPT_SoVITS/mycfg/tts_infer_{speaker.lower()}.yaml"
             config = TTS_Config(cfg_path)
             tts_pipeline = TTS(config)
-            tts_pipeline.set_ref_audio(f"GPT_SoVITS/gptsovits-930/{speaker}/{speaker}.wav")
+            ref_audio = f"{root_path}/GPT_SoVITS/gptsovits-930/{speaker}/{speaker}.wav"
+            tts_pipeline.set_ref_audio(ref_audio)
             self.tts_models[speaker.lower()] = tts_pipeline
             self.inference("hello world", speaker)
 
