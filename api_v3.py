@@ -6,12 +6,20 @@ import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from inference import Inference
+
 APP = FastAPI()
+
+tts_pipline = Inference()
 
 
 class TTSRequest(BaseModel):
     text: str = None
-    speaker: str = ""
+    speaker_id: str = ""
+    trace_id: str = ""
+
+
+async def tts_handle(trace_id, text, speaker_id):
 
 
 @APP.get("/api/check-health")
@@ -19,10 +27,9 @@ async def check_health():
     return "OK"
 
 
-@APP.post("/tts")
+@APP.post("/audgeneratebase64")
 async def tts(request: TTSRequest):
-    req = request.dict()
-    return await tts_handle(req)
+    return await tts_handle(request, request.text, request.speaker_id)
 
 
 if __name__ == "__main__":
