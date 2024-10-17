@@ -25,6 +25,7 @@ class TTSRequest(BaseModel):
 def pack_wav(io_buffer: BytesIO, data: np.ndarray, rate: int):
     io_buffer = BytesIO()
     sf.write(io_buffer, data, rate, format='wav')
+    io_buffer.seek(0)
     return io_buffer
 
 
