@@ -901,8 +901,8 @@ async def control(command: str = None):
     return handle_control(command)
 
 
-@app.get("/check-health")
-async def check_health(command: str = None):
+@app.get("/api/check-health")
+async def check_health():
     return "OK"
 
 
