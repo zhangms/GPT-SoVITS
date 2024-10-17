@@ -1,9 +1,12 @@
 import os
 import signal
 import traceback
+from io import BytesIO
 
+import numpy as np
+import soundfile as sf
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from pydantic import BaseModel
 
 from inference import Inference
@@ -19,8 +22,19 @@ class TTSRequest(BaseModel):
     trace_id: str = ""
 
 
+def pack_wav(io_buffer: BytesIO, data: np.ndarray, rate: int):
+    io_buffer = BytesIO()
+    sf.write(io_buffer, data, rate, format='wav')
+    return io_buffer
+
+
 async def tts_handle(trace_id, text, speaker_id):
-    return tts_pipline.inference(trace_id, text, speaker_id)
+    try:
+        sr, audio = tts_pipline.inference(trace_id, text, speaker_id)
+        audio_data = pack_wav(BytesIO(), audio, sr)
+        return Response(audio_data, media_type=f"audio/wav")
+    except Exception as ex:
+        return str(ex)
 
 
 @APP.get("/api/check-health")

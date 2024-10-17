@@ -1,0 +1,4 @@
+GET http://8.215.71.251:9880/tts?text=hello world&speaker_id=Binary&trace_id=111
+Accept: application/json
+
+###
