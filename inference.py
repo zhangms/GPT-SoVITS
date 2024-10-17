@@ -1,5 +1,5 @@
 class InferenceModel(object):
-    def __init__(self):
+    def __init__(self, speaker_id: str):
         print("Initializing model")
 
     def inf(self, text: str, speaker: str, language: str):
