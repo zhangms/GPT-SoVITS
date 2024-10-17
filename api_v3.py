@@ -129,8 +129,8 @@ def gr_app():
 if __name__ == "__main__":
     try:
         io = gr_app()
-        gr.mount_gradio_app(APP, io, path="/gr")
-        uvicorn.run(app=APP, host="0.0.0.0", port=7080, workers=4)
+        gr.mount_gradio_app(APP, io, path="/gr", )
+        uvicorn.run(app='api_v3:APP', host="0.0.0.0", port=7080, workers=4)
     except Exception as e:
         print(e)
         traceback.print_exc()
