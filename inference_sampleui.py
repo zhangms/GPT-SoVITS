@@ -2,13 +2,14 @@ import os
 
 import gradio as gr
 
+from GPT_SoVITS.TTS_infer_pack.TTS import TTS, TTS_Config
+
 root_path = os.path.split(os.path.realpath(__file__))[0]
 print("__file__", __file__)
 print("root_path", root_path)
 
-
-# config = TTS_Config("GPT_SoVITS/mycfg/tts_infer_binary.yaml")
-# tts_pipeline = TTS(config)
+config = TTS_Config("GPT_SoVITS/mycfg/tts_infer_binary.yaml")
+tts_pipeline = TTS(config)
 
 
 def tts_fn(text, speaker):
@@ -20,12 +21,11 @@ def tts_fn(text, speaker):
         "batch_size": 1,
     }
 
-    # tts_generator = tts_pipeline.run(req)
-    # sr, audio_data = next(tts_generator)
-    #
-    # print("INFERENCE_UI:", text, speaker, sr, audio_data)
-    # return "Success", (sr, audio_data)
-    return "Success", None
+    tts_generator = tts_pipeline.run(req)
+    sr, audio_data = next(tts_generator)
+
+    print("INFERENCE_UI:", text, speaker, sr, audio_data)
+    return "Success", (sr, audio_data)
 
 
 if __name__ == "__main__":
@@ -50,4 +50,4 @@ if __name__ == "__main__":
                     btn.click(tts_fn,
                               inputs=[textbox, char_dropdown],
                               outputs=[text_output, audio_output])
-    app.launch(share=False, server_port=9880, server_name="0.0.0.0")
+    app.launch(share=False, server_port=7080, server_name="0.0.0.0")
