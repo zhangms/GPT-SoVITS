@@ -8,7 +8,7 @@ import numpy as np
 import soundfile as sf
 import uvicorn
 from fastapi import FastAPI, Response
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 
 from inference import Inference
@@ -50,6 +50,19 @@ async def tts_base64_handle(trace_id, text, speaker_id):
         return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
 
 
+async def tts_stream_handle(trace_id, text, speaker_id):
+    try:
+        tts_gen = tts_pipline.generator(text, speaker_id)
+
+        def streaming_generator(tts_generator):
+            for sr, chunk in tts_generator:
+                yield pack_mp3(chunk, sr).getvalue()
+
+        return StreamingResponse(streaming_generator(tts_gen), media_type=f"audio/mp3")
+    except Exception as ex:
+        return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
+
+
 @APP.get("/api/check-health")
 async def check_health():
     return "OK"
@@ -61,8 +74,13 @@ async def tts(trace_id: str, text: str, speaker_id: str):
 
 
 @APP.post("/audgeneratebase64")
-async def tts(request: TTSRequest):
+async def audgeneratebase64(request: TTSRequest):
     return await tts_base64_handle(request.trace_id, request.text, request.speaker_id)
+
+
+@APP.post("/tts_stream")
+async def tts_stream(trace_id: str, text: str, speaker_id: str):
+    return await tts_stream_handle(trace_id, text, speaker_id)
 
 
 if __name__ == "__main__":

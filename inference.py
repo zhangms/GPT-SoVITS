@@ -40,6 +40,16 @@ class Inference(object):
     def get_speakers(self):
         return self.speakers
 
+    def generator(self, text, speaker):
+        req = {
+            "text": text,
+            "text_lang": "en",
+            "text_split_method": "cut5",
+            "ref_audio_path": None,
+            "return_fragment": True,
+        }
+        return self.tts_models[speaker.lower()].run(req)
+
     def inference(self, trace_id, text, speaker):
         req = {
             "text": text,
