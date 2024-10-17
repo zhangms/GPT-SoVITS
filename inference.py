@@ -44,6 +44,7 @@ class Inference(object):
             "text": text,
             "text_lang": "en",
             "text_split_method": "cut5",
+            "ref_audio_path": "",
         }
 
         start = time.time()
