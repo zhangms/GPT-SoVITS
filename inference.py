@@ -52,5 +52,5 @@ class Inference(object):
         sr, audio_data = next(tts_generator)
         end = time.time()
 
-        print(f"TTS_INFERENCE|{speaker}|{text}|rt{end - start}")
+        print(f"TTS_INFERENCE|{speaker}|{text}|rt:{end - start}")
         return sr, audio_data

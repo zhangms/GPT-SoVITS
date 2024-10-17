@@ -20,6 +20,7 @@ def tts_fn(text, speaker):
 
 
 if __name__ == "__main__":
+    speakers = tts_pipline.get_speakers()
     app = gr.Blocks()
     with app:
         with gr.Tab("Text-to-Speech"):
