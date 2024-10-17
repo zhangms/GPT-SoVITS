@@ -2,14 +2,13 @@ import os
 
 import gradio as gr
 
-from GPT_SoVITS.TTS_infer_pack.TTS import TTS_Config, TTS
-
 root_path = os.path.split(os.path.realpath(__file__))[0]
 print("__file__", __file__)
 print("root_path", root_path)
 
-config = TTS_Config("GPT_SoVITS/mycfg/tts_infer_binary.yaml")
-tts_pipeline = TTS(config)
+
+# config = TTS_Config("GPT_SoVITS/mycfg/tts_infer_binary.yaml")
+# tts_pipeline = TTS(config)
 
 
 def tts_fn(text, speaker):
@@ -21,11 +20,12 @@ def tts_fn(text, speaker):
         "batch_size": 1,
     }
 
-    tts_generator = tts_pipeline.run(req)
-    sr, audio_data = next(tts_generator)
-
-    print("INFERENCE_UI:", text, speaker, sr, audio_data)
-    return "Success", (sr, audio_data)
+    # tts_generator = tts_pipeline.run(req)
+    # sr, audio_data = next(tts_generator)
+    #
+    # print("INFERENCE_UI:", text, speaker, sr, audio_data)
+    # return "Success", (sr, audio_data)
+    return "Success", None
 
 
 if __name__ == "__main__":
