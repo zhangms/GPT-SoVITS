@@ -19,6 +19,7 @@ def tts_fn(text, speaker):
         "text_split_method": "cut5",
         "media_type": "wav",
         "batch_size": 1,
+        "ref_audio_path": "/workspace/res/gptsovits-930/Binary/Binary.wav",
     }
 
     tts_generator = tts_pipeline.run(req)
