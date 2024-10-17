@@ -812,6 +812,7 @@ if __name__ == '__main__':
         server_name="0.0.0.0",
         inbrowser=True,
         share=is_share,
+        language="zh_CN",
         server_port=infer_ttswebui,
         quiet=True,
     )
