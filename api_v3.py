@@ -45,7 +45,7 @@ async def tts_base64_handle(trace_id, text, speaker_id):
         sr, audio = tts_pipline.inference(trace_id, text, speaker_id)
         audio_data = pack_mp3(audio, sr).getvalue()
         encoded_content = base64.b64encode(audio_data)
-        return JSONResponse(content=f"{'audio':'{encoded_content}'}")
+        return {"audio": str(encoded_content)}
     except Exception as ex:
         return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
 

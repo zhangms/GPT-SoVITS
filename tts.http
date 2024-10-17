@@ -1,4 +1,16 @@
+POST http://8.215.71.251:7080/audgeneratebase64
+Content-Type: application/json
+
+{
+  "trace_id": "111",
+  "text": "hello world",
+  "speaker_id": "Binary"
+}
+
+###
 GET http://8.215.71.251:7080/tts?text=hello world&speaker_id=Binary&trace_id=111
 Accept: application/json
 
 ###
+
+
