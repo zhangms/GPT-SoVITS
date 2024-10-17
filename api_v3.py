@@ -31,7 +31,7 @@ def pack_wav(io_buffer: BytesIO, data: np.ndarray, rate: int):
 async def tts_handle(trace_id, text, speaker_id):
     try:
         sr, audio = tts_pipline.inference(trace_id, text, speaker_id)
-        audio_data = pack_wav(BytesIO(), audio, sr)
+        audio_data = pack_wav(BytesIO(), audio, sr).getvalue()
         return Response(audio_data, media_type=f"audio/wav")
     except Exception as ex:
         return str(ex)
