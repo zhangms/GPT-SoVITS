@@ -62,7 +62,7 @@ async def tts(trace_id: str, text: str, speaker_id: str):
 
 @APP.post("/audgeneratebase64")
 async def tts(request: TTSRequest):
-    return await tts_base64_handle(request, request.text, request.speaker_id)
+    return await tts_base64_handle(request.trace_id, request.text, request.speaker_id)
 
 
 if __name__ == "__main__":
