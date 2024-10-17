@@ -6,8 +6,6 @@ import sys
 import traceback
 from copy import deepcopy
 
-from tqdm import tqdm
-
 now_dir = os.getcwd()
 sys.path.append(now_dir)
 import ffmpeg
@@ -790,7 +788,7 @@ class TTS:
             def make_batch(batch_texts):
                 batch_data = []
                 print(i18n("############ 提取文本Bert特征 ############"))
-                for text in tqdm(batch_texts):
+                for text in batch_texts:
                     phones, bert_features, norm_text = self.text_preprocessor.segment_and_extract_feature_for_text(text,
                                                                                                                    text_lang,
                                                                                                                    self.configs.version)
