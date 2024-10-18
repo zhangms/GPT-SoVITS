@@ -1,1 +1,1 @@
-nohup ./runsync.sh >> /workspace/res/out.txt 2>&1 &
+nohup ./runsync.sh >> out.txt 2>&1 &
