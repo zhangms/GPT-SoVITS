@@ -35,7 +35,7 @@ def pack_mp3(data: np.ndarray, rate: int):
     io_buffer = BytesIO()
     sf.write(io_buffer, data, rate, format='mp3')
 
-    string_data = "  "
+    string_data = " "
     io_buffer.write(string_data.encode('utf-8'))
 
     io_buffer.seek(0)
@@ -78,6 +78,7 @@ async def tts_stream_handle(trace_id, text, speaker_id):
 
         return StreamingResponse(streaming_generator(tts_gen), media_type=f"audio/mp3")
     except Exception as ex:
+        print("STREAM_GENERATOR ERROR:", ex)
         return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
 
 
