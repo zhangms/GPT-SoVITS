@@ -1,0 +1,1 @@
+pkill -SIGINT -f "uvicorn api_v3:APP"
