@@ -13,14 +13,14 @@ class Inference(object):
     def __init__(self):
         self.speakers = [
             "Binary",
-            # "Dara",
-            # "Fantasm",
-            # "MaXine",
-            # "Neon",
-            # "Pyro",
-            # "Vigor",
-            # "Vio",
-            # "Ziggy"
+            "Dara",
+            "Fantasm",
+            "MaXine",
+            "Neon",
+            "Pyro",
+            "Vigor",
+            "Vio",
+            "Ziggy"
         ]
 
         self.tts_models = {}
