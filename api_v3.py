@@ -106,7 +106,7 @@ async def tts_stream(trace_id: str, text: str, speaker_id: str):
 
 if __name__ == "__main__":
     try:
-        uvicorn.run(app='api_v3:APP', host="0.0.0.0", port=7080, workers=4)
+        uvicorn.run(APP, host="0.0.0.0", port=7080, workers=1)
     except Exception as e:
         print(e)
         traceback.print_exc()
