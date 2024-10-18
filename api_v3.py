@@ -78,7 +78,7 @@ async def tts_stream_handle(trace_id, text, speaker_id):
                 index += 1
                 yield pack_mp3_b64(chunk, sr)
 
-        return StreamingResponse(streaming_generator(tts_gen), media_type=f"audio/mp3")
+        return StreamingResponse(streaming_generator(tts_gen), media_type="text/event-stream")
     except Exception as ex:
         return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
 
