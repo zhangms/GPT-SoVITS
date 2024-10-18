@@ -16,6 +16,8 @@ from pydantic import BaseModel
 
 from inference import Inference
 
+tts_pipline = Inference()
+
 
 def gr_app():
     speakers = tts_pipline.get_speakers()
@@ -44,8 +46,6 @@ def gr_app():
 APP = FastAPI()
 io = gr_app()
 gr.mount_gradio_app(APP, io, path="/gr", )
-
-tts_pipline = Inference()
 
 
 class TTSRequest(BaseModel):
