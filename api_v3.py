@@ -16,7 +16,34 @@ from pydantic import BaseModel
 
 from inference import Inference
 
+
+def gr_app():
+    speakers = tts_pipline.get_speakers()
+    app = gr.Blocks()
+    with app:
+        with gr.Tab("Text-to-Speech"):
+            with gr.Row():
+                with gr.Column():
+                    textbox = gr.TextArea(label="Text",
+                                          placeholder="Type your sentence here",
+                                          value="Hey there! Feel free to share your thoughts or any interesting "
+                                                "stories. I'm all ears!",
+                                          elem_id=f"tts-input")
+                    # select character
+                    char_dropdown = gr.Dropdown(choices=speakers, value=speakers[0], label='character')
+                with gr.Column():
+                    text_output = gr.Textbox(label="Message")
+                    audio_output = gr.Audio(label="Output Audio", elem_id="tts-audio")
+                    btn = gr.Button("Generate!")
+                    btn.click(tts_fn,
+                              inputs=[textbox, char_dropdown],
+                              outputs=[text_output, audio_output])
+    return app
+
+
 APP = FastAPI()
+io = gr_app()
+gr.mount_gradio_app(APP, io, path="/gr", )
 
 tts_pipline = Inference()
 
@@ -102,34 +129,8 @@ async def tts_stream(trace_id: str, text: str, speaker_id: str):
     return await tts_stream_handle(trace_id, text, speaker_id)
 
 
-def gr_app():
-    speakers = tts_pipline.get_speakers()
-    app = gr.Blocks()
-    with app:
-        with gr.Tab("Text-to-Speech"):
-            with gr.Row():
-                with gr.Column():
-                    textbox = gr.TextArea(label="Text",
-                                          placeholder="Type your sentence here",
-                                          value="Hey there! Feel free to share your thoughts or any interesting "
-                                                "stories. I'm all ears!",
-                                          elem_id=f"tts-input")
-                    # select character
-                    char_dropdown = gr.Dropdown(choices=speakers, value=speakers[0], label='character')
-                with gr.Column():
-                    text_output = gr.Textbox(label="Message")
-                    audio_output = gr.Audio(label="Output Audio", elem_id="tts-audio")
-                    btn = gr.Button("Generate!")
-                    btn.click(tts_fn,
-                              inputs=[textbox, char_dropdown],
-                              outputs=[text_output, audio_output])
-    return app
-
-
 if __name__ == "__main__":
     try:
-        io = gr_app()
-        gr.mount_gradio_app(APP, io, path="/gr", )
         uvicorn.run(app='api_v3:APP', host="0.0.0.0", port=7080, workers=4)
     except Exception as e:
         print(e)
