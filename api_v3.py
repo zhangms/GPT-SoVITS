@@ -35,7 +35,7 @@ def pack_mp3(data: np.ndarray, rate: int):
     io_buffer = BytesIO()
     sf.write(io_buffer, data, rate, format='mp3')
 
-    string_data = " "
+    string_data = "\t"
     io_buffer.write(string_data.encode('utf-8'))
 
     io_buffer.seek(0)
