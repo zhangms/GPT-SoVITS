@@ -43,6 +43,15 @@ def pack_mp3_base64(data: np.ndarray, rate: int):
     return base64.b64encode(data)
 
 
+def pack_mp3_base64_buffer(data: np.ndarray, rate: int):
+    io_buffer = BytesIO()
+    data = pack_mp3_base64(data, rate)
+    io_buffer.write(data)
+    io_buffer.write(b'\n')
+    io_buffer.seek(0)
+    return io_buffer
+
+
 async def tts_handle(trace_id, text, speaker_id):
     try:
         sr, audio = tts_pipline.inference(trace_id, text, speaker_id)
@@ -74,7 +83,7 @@ async def tts_stream_handle(trace_id, text, speaker_id):
                 start = end
                 print(f"{datetime.datetime.now()}|TTS_STREAM_GENERATOR|{trace_id}|{speaker_id}|index:{index}|rt:{rt}")
                 index += 1
-                yield pack_mp3_base64(chunk, sr)
+                yield pack_mp3_base64_buffer(chunk, sr)
 
         return StreamingResponse(streaming_generator(tts_gen), media_type=f"text/event-stream")
     except Exception as ex:
