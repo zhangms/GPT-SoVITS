@@ -34,11 +34,13 @@ class TTSRequest(BaseModel):
 def pack_mp3(data: np.ndarray, rate: int):
     io_buffer = BytesIO()
     sf.write(io_buffer, data, rate, format='mp3')
-
-    io_buffer.write(b'\b')
-
     io_buffer.seek(0)
     return io_buffer
+
+
+def pack_mp3_base64(data: np.ndarray, rate: int):
+    data = pack_mp3(data, rate).getvalue()
+    return base64.b64encode(data)
 
 
 async def tts_handle(trace_id, text, speaker_id):
@@ -53,9 +55,8 @@ async def tts_handle(trace_id, text, speaker_id):
 async def tts_base64_handle(trace_id, text, speaker_id):
     try:
         sr, audio = tts_pipline.inference(trace_id, text, speaker_id)
-        audio_data = pack_mp3(audio, sr).getvalue()
-        encoded_content = base64.b64encode(audio_data)
-        return {"audio": encoded_content}
+        audio_data = pack_mp3_base64(audio, sr)
+        return {"audio": audio_data}
     except Exception as ex:
         return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
 
@@ -73,9 +74,9 @@ async def tts_stream_handle(trace_id, text, speaker_id):
                 start = end
                 print(f"{datetime.datetime.now()}|TTS_STREAM_GENERATOR|{trace_id}|{speaker_id}|index:{index}|rt:{rt}")
                 index += 1
-                yield pack_mp3(chunk, sr).getvalue()
+                yield pack_mp3_base64(chunk, sr)
 
-        return StreamingResponse(streaming_generator(tts_gen), media_type=f"audio/mp3")
+        return StreamingResponse(streaming_generator(tts_gen), media_type=f"text/event-stream")
     except Exception as ex:
         print("STREAM_GENERATOR ERROR:", ex)
         return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
