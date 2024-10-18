@@ -38,20 +38,6 @@ def pack_mp3(data: np.ndarray, rate: int):
     return io_buffer
 
 
-def pack_mp3_base64(data: np.ndarray, rate: int):
-    data = pack_mp3(data, rate).getvalue()
-    return base64.b64encode(data)
-
-
-def pack_mp3_base64_buffer(data: np.ndarray, rate: int):
-    io_buffer = BytesIO()
-    data = pack_mp3_base64(data, rate)
-    io_buffer.write(data)
-    io_buffer.write(b'\n')
-    io_buffer.seek(0)
-    return io_buffer
-
-
 async def tts_handle(trace_id, text, speaker_id):
     try:
         sr, audio = tts_pipline.inference(trace_id, text, speaker_id)
@@ -64,8 +50,9 @@ async def tts_handle(trace_id, text, speaker_id):
 async def tts_base64_handle(trace_id, text, speaker_id):
     try:
         sr, audio = tts_pipline.inference(trace_id, text, speaker_id)
-        audio_data = pack_mp3_base64(audio, sr)
-        return {"audio": audio_data}
+        audio_data = pack_mp3(audio, sr).getvalue()
+        encoded_content = base64.b64encode(audio_data)
+        return {"audio": encoded_content}
     except Exception as ex:
         return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
 
@@ -83,11 +70,10 @@ async def tts_stream_handle(trace_id, text, speaker_id):
                 start = end
                 print(f"{datetime.datetime.now()}|TTS_STREAM_GENERATOR|{trace_id}|{speaker_id}|index:{index}|rt:{rt}")
                 index += 1
-                yield pack_mp3_base64_buffer(chunk, sr)
+                yield pack_mp3(chunk, sr).getvalue()
 
-        return StreamingResponse(streaming_generator(tts_gen), media_type=f"text/event-stream")
+        return StreamingResponse(streaming_generator(tts_gen), media_type=f"audio/mp3")
     except Exception as ex:
-        print("STREAM_GENERATOR ERROR:", ex)
         return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
 
 
@@ -114,7 +100,7 @@ async def tts_stream(trace_id: str, text: str, speaker_id: str):
 
 if __name__ == "__main__":
     try:
-        uvicorn.run(APP, host="0.0.0.0", port=7080, workers=1)
+        uvicorn.run(app='api_v3:APP', host="0.0.0.0", port=7080, workers=4)
     except Exception as e:
         print(e)
         traceback.print_exc()
