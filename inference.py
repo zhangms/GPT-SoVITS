@@ -38,7 +38,7 @@ class Inference(object):
             self.inference(speaker_id, speaker_id, "warmup")
 
     def get_speakers(self):
-        return self.speakers
+        return list(self.speakers.keys())
 
     def generator(self, speaker, text):
         speaker_id = speaker.lower()
