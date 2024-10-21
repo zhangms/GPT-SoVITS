@@ -3,6 +3,8 @@ import json
 import os
 import time
 
+from GPT_SoVITS.TTS_infer_pack.TTS import TTS_Config, TTS
+
 root_path = os.path.split(os.path.realpath(__file__))[0]
 print("__file__", __file__)
 print("root_path", root_path)
@@ -24,44 +26,46 @@ class Inference(object):
                 self.speakers[key] = speaker_cfgs[key]
 
     def load_tts_model(self):
-        pass
-        # for speaker in self.speakers:
-        #     cfg_path = f"{root_path}/GPT_SoVITS/mycfg/tts_infer_{speaker.lower()}.yaml"
-        #     ref_audio = f"{root_path}/GPT_SoVITS/gptsovits-930/{speaker}/{speaker}.wav"
-        #     print(f"init tts_model|{speaker}|{cfg_path}|{ref_audio}")
-        #     config = TTS_Config(cfg_path)
-        #     tts_pipeline = TTS(config)
-        #     tts_pipeline.set_ref_audio(ref_audio)
-        #     self.tts_models[speaker.lower()] = tts_pipeline
-        #     self.inference(speaker, "warmup", speaker)
+        for speaker_id in self.speakers:
+            speaker_cfg = self.speakers[speaker_id]
+            cfg_path = speaker_cfg["tts_infer_file"]
+            ref_audio = speaker_cfg["ref_audio"]
+            print(f"init tts_model|{speaker_id}|{cfg_path}|{ref_audio}")
+            config = TTS_Config(cfg_path)
+            tts_pipeline = TTS(config)
+            tts_pipeline.set_ref_audio(ref_audio)
+            self.tts_models[speaker_id] = tts_pipeline
+            self.inference(speaker_id, speaker_id, "warmup")
 
     def get_speakers(self):
         return self.speakers
 
-    def generator(self, text, speaker):
+    def generator(self, speaker, text):
+        speaker_id = speaker.lower()
         req = {
             "text": text,
             "text_lang": "en",
             "text_split_method": "cut5",
             "ref_audio_path": None,
-            "prompt_text": self.ref_prompt_text[speaker],
+            "prompt_text": self.speakers[speaker_id]["ref_prompt_text"],
             "prompt_lang": "en",
             "return_fragment": True,
         }
-        return self.tts_models[speaker.lower()].run(req)
+        return self.tts_models[speaker_id].run(req)
 
-    def inference(self, trace_id, text, speaker):
+    def inference(self, trace_id, speaker, text):
+        speaker_id = speaker.lower()
         req = {
             "text": text,
             "text_lang": "en",
             "text_split_method": "cut5",
             "ref_audio_path": None,
-            "prompt_text": self.ref_prompt_text[speaker],
+            "prompt_text": self.speakers[speaker_id]["ref_prompt_text"],
             "prompt_lang": "en"
         }
 
         start = time.time()
-        tts_generator = self.tts_models[speaker.lower()].run(req)
+        tts_generator = self.tts_models[speaker_id].run(req)
         sr, audio_data = next(tts_generator)
         end = time.time()
 
