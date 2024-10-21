@@ -44,18 +44,18 @@ def pack_mp3_b64(data: np.ndarray, rate: int):
     return encoded_content + b'\n'
 
 
-async def tts_handle(trace_id, text, speaker_id):
+async def tts_handle(trace_id, speaker_id, text):
     try:
-        sr, audio = tts_pipline.inference(trace_id, text, speaker_id)
+        sr, audio = tts_pipline.inference(trace_id, speaker_id, text)
         audio_data = pack_mp3(audio, sr).getvalue()
         return Response(audio_data, media_type=f"audio/mp3")
     except Exception as ex:
         return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
 
 
-async def tts_base64_handle(trace_id, text, speaker_id):
+async def tts_base64_handle(trace_id, speaker_id, text):
     try:
-        sr, audio = tts_pipline.inference(trace_id, text, speaker_id)
+        sr, audio = tts_pipline.inference(trace_id, speaker_id, text)
         audio_data = pack_mp3(audio, sr).getvalue()
         encoded_content = base64.b64encode(audio_data)
         return {"audio": encoded_content}
@@ -63,9 +63,9 @@ async def tts_base64_handle(trace_id, text, speaker_id):
         return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
 
 
-async def tts_stream_handle(trace_id, text, speaker_id):
+async def tts_stream_handle(trace_id, speaker_id, text):
     try:
-        tts_gen = tts_pipline.generator(text, speaker_id)
+        tts_gen = tts_pipline.generator(speaker_id, text)
 
         def streaming_generator(tts_generator):
             start = time.time()
@@ -90,18 +90,18 @@ async def check_health():
 
 @APP.get("/tts")
 async def tts(trace_id: str, text: str, speaker_id: str):
-    return await tts_handle(trace_id, text, speaker_id)
+    return await tts_handle(trace_id, speaker_id, text)
 
 
 @APP.post("/audgeneratebase64")
 async def audgeneratebase64(request: TTSRequest):
-    return await tts_base64_handle(request.trace_id, request.text, request.speaker_id)
+    return await tts_base64_handle(request.trace_id, request.speaker_id, request.text)
 
 
 @APP.get("/tts_stream")
 async def tts_stream(trace_id: str, text: str, speaker_id: str):
     print(f"{datetime.datetime.now()}|TTS_STREAM|{trace_id}|{speaker_id}|{text}")
-    return await tts_stream_handle(trace_id, text, speaker_id)
+    return await tts_stream_handle(trace_id, speaker_id, text)
 
 
 if __name__ == "__main__":
