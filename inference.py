@@ -16,6 +16,7 @@ class Inference(object):
         self.ref_prompt_text = []
         self.tts_models = {}
         self.load_speakers("/workspace/GPT-SoVITS/GPT_SoVITS/gptsovits-930/")
+        self.load_speakers("/workspace/GPT-SoVITS/GPT_SoVITS/NPC10.21/")
         print(self.speakers)
         self.load_tts_model()
 
