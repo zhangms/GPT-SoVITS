@@ -69,8 +69,8 @@ def gen_config(model_dir: str):
     for d in os.listdir(model_dir):
         dir_path = os.path.join(model_dir, d)
         if os.path.isdir(dir_path):
-            speaker_id = d.lower()
-            cfg = process_model_config(speaker_id, dir_path)
+            speaker_id = d
+            cfg = process_model_config(speaker_id.lower(), dir_path)
             write_tts_infer(cfg)
             cfg_map[speaker_id] = cfg
 

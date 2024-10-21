@@ -13,6 +13,7 @@ print("root_path", root_path)
 class Inference(object):
     def __init__(self):
         self.speakers = {}
+        self.speaker_names = []
         self.ref_prompt_text = []
         self.tts_models = {}
         self.load_speakers("/workspace/GPT-SoVITS/GPT_SoVITS/gptsovits-930/")
@@ -24,7 +25,8 @@ class Inference(object):
         with open(os.path.join(model_path, "model_list.json"), 'r') as f:
             speaker_cfgs = json.load(f)
             for key in speaker_cfgs:
-                self.speakers[key] = speaker_cfgs[key]
+                self.speakers[key.lower()] = speaker_cfgs[key]
+                self.speaker_names.append(key)
 
     def load_tts_model(self):
         for speaker_id in self.speakers:
@@ -39,7 +41,7 @@ class Inference(object):
             self.inference(speaker_id, speaker_id, "warmup")
 
     def get_speakers(self):
-        return list(self.speakers.keys())
+        return list(self.speaker_names)
 
     def generator(self, speaker, text):
         speaker_id = speaker.lower()
