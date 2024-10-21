@@ -9,7 +9,7 @@ class SampleUI(object):
 
     def tts_fn(self, text, speaker):
         try:
-            sr, audio = self.tts_pipline.inference("", text, speaker)
+            sr, audio = self.tts_pipline.inference("", speaker, text)
             return "Success", (sr, audio)
         except Exception as ex:
             return f"Error: {ex}", None
