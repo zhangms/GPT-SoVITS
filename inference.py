@@ -29,13 +29,10 @@ class Inference(object):
             "Fantasm": "Alright, everyone, please go see my adorable assistant, Katie, to pick up your very own tent.",
             "MaXine": "Welcome to NovaJoy Island! Doesn't the name just sparkle with excitement,zip-zap?",
             "Neon": "Welcome! Before I introduce myself, please look this way, Pioneer--",
-            "Pyro": "Good morning, Drylander. The recent samples you brought have been a bit repetitive, but that's "
-                    "okay. I trust you'll soon discover the patterns of rare insect appearances, glub glub.",
-            "Vigor": "Good morning, Drylander. The recent samples you brought have been a bit repetitive, but that's "
-                     "okay. I trust you'll soon discover the patterns of rare insect appearances, glub glub.",
+            "Pyro": "Good morning, Drylander. The recent samples you brought have been a bit repetitive, but that's okay. I trust you'll soon discover the patterns of rare insect appearances, glub glub.",
+            "Vigor": "Good morning, Drylander. The recent samples you brought have been a bit repetitive, but that's okay. I trust you'll soon discover the patterns of rare insect appearances, glub glub.",
             "Vio": "Alright, everyone, please go see my adorable assistant, Katie, to pick up your very own tent.",
-            "Ziggy": "Good morning, Drylander. The recent samples you brought have been a bit repetitive, but that's "
-                     "okay. I trust you'll soon discover the patterns of rare insect appearances, glub glub.",
+            "Ziggy": "Good morning, Drylander. The recent samples you brought have been a bit repetitive, but that's okay. I trust you'll soon discover the patterns of rare insect appearances, glub glub.",
         }
 
         self.tts_models = {}

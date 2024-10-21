@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 
 tts_infer = """
@@ -29,43 +30,52 @@ default_v2:
 """
 
 
-class ModelConfig(object):
-    speaker_id: str = ""
-    ckpt_path: str = ""
-    pth_path: str = ""
-    ref_audio: str = ""
-    ref_prompt_text: str = ""
-
-
-def process_model(speaker_id, dir_path):
+def process_model_config(speaker_id, dir_path):
     print(speaker_id, dir_path)
-    cfg = ModelConfig()
-    cfg.speaker_id = speaker_id
+    cfg = {
+        "speaker_id": speaker_id
+    }
     for f in os.listdir(dir_path):
         if f.endswith(".ckpt"):
-            cfg.ckpt_path = os.path.join(dir_path, f)
+            cfg["ckpt_path"] = os.path.abspath(os.path.join(dir_path, f))
         if f.endswith(".pth"):
-            cfg.pth_path = os.path.join(dir_path, f)
+            cfg["pth_path"] = os.path.abspath(os.path.join(dir_path, f))
         if f.endswith(".wav"):
-            cfg.ref_audio = os.path.join(dir_path, f)
+            cfg["ref_audio"] = os.path.abspath(os.path.join(dir_path, f))
         if f.endswith(".txt"):
             with open(os.path.join(dir_path, f), 'r') as file:
                 # Read the contents of the file
                 content = file.read()
-                cfg.ref_prompt_text = content
+                cfg["ref_prompt_text"] = content
 
+    return cfg
+
+
+def write_tts_infer(cfg):
     # print(cfg.speaker_id, cfg.ckpt_path, cfg.pth_path, cfg.ref_audio, cfg.ref_prompt_text)
-    speaker_ttf_infer = tts_infer.format(cfg.ckpt_path, cfg.pth_path)
-    print(speaker_ttf_infer)
+    speaker_ttf_infer = tts_infer.format(cfg["ckpt_path"], cfg["pth_path"])
+    os.makedirs("./GPT_SoVITS/mycfg/", exist_ok=True)
+    speaker_id = cfg["speaker_id"]
+    tts_infer_file = f"./GPT_SoVITS/mycfg/tts_infer_{speaker_id}.yaml"
+    print(tts_infer_file)
+    with open(tts_infer_file, 'w') as f:
+        f.write(speaker_ttf_infer)
+    cfg["tts_infer_file"] = os.path.abspath(tts_infer_file)
 
 
 def gen_config(model_dir: str):
     print("Generating config...")
+    cfg_map = {}
     for d in os.listdir(model_dir):
         dir_path = os.path.join(model_dir, d)
         if os.path.isdir(dir_path):
             speaker_id = d.lower()
-            process_model(speaker_id, dir_path)
+            cfg = process_model_config(speaker_id, dir_path)
+            write_tts_infer(cfg)
+            cfg_map[speaker_id] = cfg
+
+    with open(os.path.join(model_dir, "model_list.json"), 'w') as file:
+        json.dump(cfg_map, file, indent=4)
 
 
 if __name__ == "__main__":
