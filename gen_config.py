@@ -1,4 +1,3 @@
-import argparse
 import json
 import os
 
@@ -46,7 +45,7 @@ def process_model_config(speaker_id, dir_path):
             with open(os.path.join(dir_path, f), 'r') as file:
                 # Read the contents of the file
                 content = file.read()
-                cfg["ref_prompt_text"] = content
+                cfg["ref_prompt_text"] = content.strip()
 
     return cfg
 
