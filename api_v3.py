@@ -71,11 +71,12 @@ async def tts_stream_handle(trace_id, speaker_id, text):
             start = time.time()
             index = 0
             for sr, chunk in tts_generator:
+                index += 1
                 end = time.time()
                 rt = end - start
                 print(f"{datetime.datetime.now()}|TTS_STREAM_GENERATOR|{trace_id}|{speaker_id}|index:{index}|rt:{rt}")
-                index += 1
                 yield pack_mp3_b64(chunk, sr)
+            print("", flush=True)
 
         return StreamingResponse(streaming_generator(tts_gen), media_type="text/event-stream")
     except Exception as ex:
