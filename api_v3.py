@@ -41,7 +41,7 @@ def pack_mp3(data: np.ndarray, rate: int):
 def pack_mp3_b64(data: np.ndarray, rate: int):
     mp3_data = pack_mp3(data, rate).getvalue()
     encoded_content = base64.b64encode(mp3_data)
-    return encoded_content + b'\n'
+    return b'data:' + encoded_content + b'\n'
 
 
 async def tts_handle(trace_id, speaker_id, text):
