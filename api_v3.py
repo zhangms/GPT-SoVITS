@@ -73,7 +73,6 @@ async def tts_stream_handle(trace_id, speaker_id, text):
             for sr, chunk in tts_generator:
                 end = time.time()
                 rt = end - start
-                start = end
                 print(f"{datetime.datetime.now()}|TTS_STREAM_GENERATOR|{trace_id}|{speaker_id}|index:{index}|rt:{rt}")
                 index += 1
                 yield pack_mp3_b64(chunk, sr)
