@@ -55,7 +55,7 @@ async def tts_handle(trace_id, speaker_id, text, fmt):
     try:
         sr, audio = tts_pipline.inference(trace_id, speaker_id, text)
         audio_data = pack_voice(audio, sr, fmt).getvalue()
-        return Response(audio_data, media_type=f"audio/mp3")
+        return Response(audio_data, media_type=f"audio/{fmt}")
     except Exception as ex:
         return JSONResponse(status_code=500, content=f"TTS_SERVICE_ERROR:{ex}")
 
