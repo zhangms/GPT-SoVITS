@@ -29,7 +29,7 @@ class TTSRequest(BaseModel):
     text: str = None
     speaker_id: str = ""
     trace_id: str = ""
-    format: str = "mp3"
+    fmt: str = "mp3"
 
 
 def pack_voice(data: np.ndarray, rate: int, fmt: str):
@@ -88,6 +88,11 @@ async def check_health():
 @APP.get("/tts")
 async def tts(trace_id: str, speaker_id: str, text: str, fmt: str):
     return await tts_handle(trace_id, speaker_id, text, fmt)
+
+
+@APP.post("/tts-post")
+async def tts_post(request: TTSRequest):
+    return await tts_handle(request.trace_id, request.speaker_id, request.text, request.fmt)
 
 
 @APP.get("/tts_stream")
